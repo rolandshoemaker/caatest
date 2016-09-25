@@ -88,7 +88,8 @@ func query(name string, rrType uint16, resolver string, iterations int) ([]dns.R
 		case *dns.CNAME:
 			alias = t.Target
 		case *dns.DNAME:
-			alias = t.Target
+			top := strings.TrimRight(name, t.Hdr.Name)
+			alias = top + t.Target
 		default:
 			return nil, fmt.Errorf("Answer contains malformed %q record", dns.TypeToString[resp.Answer[0].Header().Rrtype])
 		}
