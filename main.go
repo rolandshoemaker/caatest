@@ -195,7 +195,7 @@ func main() {
 			if len(set.issueWild) > 0 {
 				for _, rr := range set.issueWild {
 					if matchesIssuer(rr, *issuer) {
-						fmt.Printf("[%s] Valid issuewild tag record for found %q in set\n", dn, *issuer)
+						fmt.Printf("[%s] Valid issuewild tag record for %q found in set\n", dn, *issuer)
 						if *verbose {
 							set.print()
 						}
@@ -210,7 +210,7 @@ func main() {
 			} else {
 				for _, rr := range set.issue {
 					if matchesIssuer(rr, *issuer) {
-						fmt.Printf("[%s] Valid issuer tag record for found %q in set\n", dn, *issuer)
+						fmt.Printf("[%s] Valid issuer tag record for %q found in set\n", dn, *issuer)
 						if *verbose {
 							set.print()
 						}
@@ -233,7 +233,7 @@ func main() {
 			}
 			for _, rr := range set.issue {
 				if matchesIssuer(rr, *issuer) {
-					fmt.Printf("[%s] Valid issue tag record for found %q in set\n", dn, *issuer)
+					fmt.Printf("[%s] Valid issue tag record for %q found in set\n", dn, *issuer)
 					if *verbose {
 						set.print()
 					}
