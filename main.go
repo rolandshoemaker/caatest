@@ -142,6 +142,11 @@ func main() {
 		upstream = *resolver
 	}
 
+	wildcard := strings.HasPrefix(domain, "*.")
+	if wildcard {
+		domain = strings.TrimLeft(domain, "*.")
+	}
+
 	labels := strings.Split(strings.TrimRight(domain, "."), ".")
 	if labels[len(labels)-1] == "" {
 		labels = labels[:len(labels)-2]
@@ -181,12 +186,41 @@ func main() {
 			set.print()
 			continue
 		}
-		if strings.HasPrefix(domain, ".*") {
-			if len(set.issueWild) == 0 {
-				continue // I think this is wrong?
+		if wildcard {
+			if len(set.issueWild) == 0 && len(set.issue) == 0 {
+				continue
 			}
-			for _, rr := range set.issueWild {
-				fmt.Println(rr)
+			// I'm not 100% sure this is correct...
+			if len(set.issueWild) > 0 {
+				for _, rr := range set.issueWild {
+					if matchesIssuer(rr, *issuer) {
+						fmt.Printf("[%s] Valid issuewild tag record for found %q in set\n", dn, *issuer)
+						if *verbose {
+							set.print()
+						}
+						os.Exit(0)
+					}
+				}
+				fmt.Fprintf(os.Stderr, "[%s] Issuer %q not present in issuewild tag set\n", dn, *issuer)
+				if *verbose {
+					set.print()
+				}
+				os.Exit(1)
+			} else {
+				for _, rr := range set.issue {
+					if matchesIssuer(rr, *issuer) {
+						fmt.Printf("[%s] Valid issuer tag record for found %q in set\n", dn, *issuer)
+						if *verbose {
+							set.print()
+						}
+						os.Exit(0)
+					}
+				}
+				fmt.Fprintf(os.Stderr, "[%s] Issuer %q not present in issue tag set\n", dn, *issuer)
+				if *verbose {
+					set.print()
+				}
+				os.Exit(1)
 			}
 		} else {
 			if len(set.issue) == 0 {
@@ -205,7 +239,7 @@ func main() {
 					os.Exit(0)
 				}
 			}
-			fmt.Fprintf(os.Stderr, "[%s] Issuer %q not present in CAA issue tag set\n", dn, *issuer)
+			fmt.Fprintf(os.Stderr, "[%s] Issuer %q not present in issue tag set\n", dn, *issuer)
 			if *verbose {
 				set.print()
 			}
