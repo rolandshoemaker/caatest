@@ -82,7 +82,7 @@ func query(name string, rrType uint16, resolver string, iterations int) ([]dns.R
 		return nil, fmt.Errorf("Non-zero RCODE in response (%s)", dns.RcodeToString[resp.Rcode])
 	}
 
-	if len(resp.Answer) == 0 && (resp.Answer[0].Header().Rrtype == dns.TypeCNAME || resp.Answer[0].Header().Rrtype == dns.TypeDNAME) {
+	if len(resp.Answer) == 1 && (resp.Answer[0].Header().Rrtype == dns.TypeCNAME || resp.Answer[0].Header().Rrtype == dns.TypeDNAME) {
 		var alias string
 		switch t := resp.Answer[0].(type) {
 		case *dns.CNAME:
