@@ -121,7 +121,7 @@ func main() {
 
 	domain := flag.Arg(0)
 	if domain == "" {
-		fmt.Fprintf(os.Stderr, "No domain provided")
+		fmt.Fprintln(os.Stderr, "No domain provided")
 		flag.Usage()
 		os.Exit(1)
 	}
