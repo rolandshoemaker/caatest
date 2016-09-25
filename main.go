@@ -109,13 +109,20 @@ func matchesIssuer(r *dns.CAA, issuer string) bool {
 
 func main() {
 	resolver := flag.String("resolver", "", "DNS server and port to send questions to (defaults to resolvers in /etc/resolv.conf if empty)")
-	issuer := flag.String("issuer", "", "Name of issuer to test against (if empty exit code will always be 0)")
-	verbose := flag.Bool("verbose", false, "")
+	issuer := flag.String("issuer", "", "Name of issuer to test against (if empty exit code will always be 0 and full chain will be checked)")
+	verbose := flag.Bool("verbose", false, "Print extra information about the CAA sets that are returned")
+	flag.Usage = func() {
+		fmt.Printf("Usage of caatest:\n")
+		fmt.Printf("\tcaatest [flags] domain-name\n")
+		fmt.Printf("Flags:\n")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
 	domain := flag.Arg(0)
 	if domain == "" {
 		fmt.Fprintf(os.Stderr, "No domain provided")
+		flag.Usage()
 		os.Exit(1)
 	}
 
